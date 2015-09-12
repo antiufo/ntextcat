@@ -7,10 +7,12 @@ using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 using IvanAkcheurov.NClassify;
+using Shaman.Runtime;
+using T = Shaman.Runtime.ValueString;
 
 namespace NTextCat
 {
-    public class XmlLanguageModelPersister<T>
+    public class XmlLanguageModelPersister
     {
         public static readonly string RootElement = "LanguageModel";
         private const string MetadataElement = "metadata";
@@ -31,7 +33,7 @@ namespace NTextCat
         public XmlLanguageModelPersister()
         {
             _serializeFeature = arg => Convert.ToString(arg, CultureInfo.InvariantCulture);
-            _deserializeFeature = text => (T) Convert.ChangeType(text, typeof (T));
+            _deserializeFeature = text => new ValueString(text);
         }
 
         public LanguageModel<T> Load(Stream sourceStream)

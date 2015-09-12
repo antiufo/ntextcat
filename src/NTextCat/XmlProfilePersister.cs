@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Shaman.Runtime;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -17,7 +18,7 @@ namespace NTextCat
         private const string ParametersElement = "Parameters";
         private const string LanguageModelsElement = "LanguageModels";
 
-        public static void Save<T>(IEnumerable<LanguageModel<T>> languageModels, int maximumSizeOfDistribution, int maxNGramLength, Stream outputStream)
+        public static void Save(IEnumerable<LanguageModel<ValueString>> languageModels, int maximumSizeOfDistribution, int maxNGramLength, Stream outputStream)
         {
             var languageModelsCache = languageModels.ToArray();
             var languageMarks =
@@ -39,7 +40,7 @@ namespace NTextCat
 
             if (languageModelsCache.Any(lm => lm.Language.Iso639_3 != null))
                 ;
-            var persister = new XmlLanguageModelPersister<T>();
+            var persister = new XmlLanguageModelPersister();
             var xDoc =
                 new XDocument(
                     xComment,
@@ -73,10 +74,10 @@ namespace NTextCat
             maximumSizeOfDistribution = int.Parse(xParameters.Element(MaximumSizeOfDistributionElement).Value);
             maxNGramLength = int.Parse(xParameters.Element(MaxNGramLengthElement).Value);
             var xLanguageModels = xProfile.Element(LanguageModelsElement);
-            var persister = new XmlLanguageModelPersister<T>();
+            var persister = new XmlLanguageModelPersister();
             var languageModelList =
-                xLanguageModels.Elements(XmlLanguageModelPersister<T>.RootElement).Select(persister.Load).ToList();
-            return languageModelList;
+                xLanguageModels.Elements(XmlLanguageModelPersister.RootElement).Select(persister.Load).ToList();
+            return (List<LanguageModel<T>>)(object)languageModelList;
 
         }
     }

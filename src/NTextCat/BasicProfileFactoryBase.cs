@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+#if !PORTABLE
 using System.Configuration;
+#endif
 using System.IO;
 using System.Linq;
 using System.Text;
 using IvanAkcheurov.NClassify;
+using Shaman.Runtime;
 
 namespace NTextCat
 {
@@ -19,6 +22,7 @@ namespace NTextCat
         /// </summary>
         public bool AllowUsingMultipleThreadsForTraining { get; private set; }
 
+#if !PORTABLE
         public static TSetting GetSetting<TSetting>(string key, TSetting defaultValue)
         {
             var setting = ConfigurationManager.AppSettings[key];
@@ -32,7 +36,7 @@ namespace NTextCat
             : this(5, GetSetting("MaximumSizeOfDistribution", 4000), GetSetting("OccuranceNumberThreshold", 0), int.MaxValue)
         {
         }
-
+#endif
         public BasicProfileFactoryBase(int maxNGramLength, int maximumSizeOfDistribution, int occuranceNumberThreshold, int onlyReadFirstNLines, bool allowUsingMultipleThreadsForTraining = true)
         {
             MaxNGramLength = maxNGramLength;
@@ -42,11 +46,11 @@ namespace NTextCat
             AllowUsingMultipleThreadsForTraining = allowUsingMultipleThreadsForTraining;
         }
 
-        public T Create(IEnumerable<LanguageModel<string>> languageModels)
+        public T Create(IEnumerable<LanguageModel<ValueString>> languageModels)
         {
             return Create(languageModels, MaxNGramLength, MaximumSizeOfDistribution, OccuranceNumberThreshold, OnlyReadFirstNLines);
         }
-        public abstract T Create(IEnumerable<LanguageModel<string>> languageModels, int maxNGramLength, int maximumSizeOfDistribution, int occuranceNumberThreshold, int onlyReadFirstNLines);
+        public abstract T Create(IEnumerable<LanguageModel<ValueString>> languageModels, int maxNGramLength, int maximumSizeOfDistribution, int occuranceNumberThreshold, int onlyReadFirstNLines);
 
         public T Train(IEnumerable<Tuple<LanguageInfo, TextReader>> input)
         {
@@ -60,7 +64,7 @@ namespace NTextCat
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public IEnumerable<LanguageModel<string>> TrainModels(IEnumerable<Tuple<LanguageInfo, TextReader>> input)
+        public IEnumerable<LanguageModel<ValueString>> TrainModels(IEnumerable<Tuple<LanguageInfo, TextReader>> input)
         {
             if (AllowUsingMultipleThreadsForTraining)
             {
@@ -84,15 +88,15 @@ namespace NTextCat
                 });
         }
 
-        private LanguageModel<string> TrainModel(LanguageInfo languageInfo, TextReader text)
+        private LanguageModel<ValueString> TrainModel(LanguageInfo languageInfo, TextReader text)
         {
-            IEnumerable<string> tokens = new CharacterNGramExtractor(MaxNGramLength, OnlyReadFirstNLines).GetFeatures(text);
-            IDistribution<string> distribution = LanguageModelCreator.CreateLangaugeModel(tokens, OccuranceNumberThreshold, MaximumSizeOfDistribution);
-            var languageModel = new LanguageModel<string>(distribution, languageInfo);
+            IEnumerable<ValueString> tokens = new CharacterNGramExtractor(MaxNGramLength, OnlyReadFirstNLines).GetFeatures(text);
+            IDistribution<ValueString> distribution = LanguageModelCreator.CreateLangaugeModel(tokens, OccuranceNumberThreshold, MaximumSizeOfDistribution);
+            var languageModel = new LanguageModel<ValueString>(distribution, languageInfo);
             return languageModel;
         }
-
-        public void SaveProfile(IEnumerable<LanguageModel<string>> languageModels, string outputFilePath)
+#if !PORTABLE
+        public void SaveProfile(IEnumerable<LanguageModel<ValueString>> languageModels, string outputFilePath)
         {
             using (var file = File.OpenWrite(outputFilePath))
             {
@@ -100,7 +104,7 @@ namespace NTextCat
             }
         }
 
-        public void SaveProfile(IEnumerable<LanguageModel<string>> languageModels, Stream outputStream)
+        public void SaveProfile(IEnumerable<LanguageModel<ValueString>> languageModels, Stream outputStream)
         {
             XmlProfilePersister.Save(languageModels, MaximumSizeOfDistribution, MaxNGramLength, outputStream);
         }
@@ -120,7 +124,7 @@ namespace NTextCat
             return Create(languageModels, MaxNGramLength, MaximumSizeOfDistribution, OccuranceNumberThreshold, OnlyReadFirstNLines);
         }
 
-        public T Load(Func<LanguageModel<string>, bool> filterPredicate = null)
+        public T Load(Func<LanguageModel<ValueString>, bool> filterPredicate = null)
         {
             var defaultProfile = GetSetting("LanguageIdentificationProfileFilePath", string.Empty);
             if (File.Exists(defaultProfile) == false)
@@ -128,21 +132,21 @@ namespace NTextCat
             return Load(defaultProfile, filterPredicate);
         }
 
-        public T Load(string inputFilePath, Func<LanguageModel<string>, bool> filterPredicate = null)
+        public T Load(string inputFilePath, Func<LanguageModel<ValueString>, bool> filterPredicate = null)
         {
             using (var file = File.OpenRead(inputFilePath))
             {
                 return Load(file, filterPredicate);
             }
         }
-
-        public T Load(Stream inputStream, Func<LanguageModel<string>, bool> filterPredicate = null)
+#endif
+        public T Load(Stream inputStream, Func<LanguageModel<ValueString>, bool> filterPredicate = null)
         {
             filterPredicate = filterPredicate ?? (_ => true);
             int maxNGramLength;
             int maximumSizeOfDistribution;
             var languageModelList =
-                XmlProfilePersister.Load<string>(inputStream, out maximumSizeOfDistribution, out maxNGramLength)
+                XmlProfilePersister.Load<ValueString>(inputStream, out maximumSizeOfDistribution, out maxNGramLength)
                     .Where(filterPredicate);
 
             return Create(languageModelList, maxNGramLength, maximumSizeOfDistribution, OccuranceNumberThreshold, OnlyReadFirstNLines);

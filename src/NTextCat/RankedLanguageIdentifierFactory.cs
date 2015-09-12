@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Shaman.Runtime;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -11,17 +12,18 @@ namespace NTextCat
     /// </summary>
     public class RankedLanguageIdentifierFactory : BasicProfileFactoryBase<RankedLanguageIdentifier>
     {
-        
+#if !PORTABLE
         public RankedLanguageIdentifierFactory()
         {
         }
+#endif
 
         public RankedLanguageIdentifierFactory(int maxNGramLength, int maximumSizeOfDistribution, int occuranceNumberThreshold, int onlyReadFirstNLines, bool allowMultithreading)
             : base(maxNGramLength, maximumSizeOfDistribution, occuranceNumberThreshold, onlyReadFirstNLines, allowMultithreading)
         {
         }
 
-        public override RankedLanguageIdentifier Create(IEnumerable<LanguageModel<string>> languageModels, int maxNGramLength, int maximumSizeOfDistribution, int occuranceNumberThreshold, int onlyReadFirstNLines)
+        public override RankedLanguageIdentifier Create(IEnumerable<LanguageModel<ValueString>> languageModels, int maxNGramLength, int maximumSizeOfDistribution, int occuranceNumberThreshold, int onlyReadFirstNLines)
         {
             var result = new RankedLanguageIdentifier(languageModels, maxNGramLength, maximumSizeOfDistribution, occuranceNumberThreshold, onlyReadFirstNLines);
             return result;
