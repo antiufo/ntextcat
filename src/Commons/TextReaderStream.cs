@@ -50,6 +50,18 @@ namespace IvanAkcheurov.Commons.IO
             throw new NotSupportedException();
         }
 
+#if PORTABLE
+        protected override void Dispose(bool disposing)
+        {
+            if(disposing && _textReader != null)
+            {
+                _textReader.Dispose();
+                _textReader = null;
+            }
+            
+        }
+
+#else
         public override void Close()
         {
             try
@@ -65,7 +77,7 @@ namespace IvanAkcheurov.Commons.IO
                 base.Close();
             }
         }
-
+#endif
         public override bool CanRead
         {
             get { return true; }

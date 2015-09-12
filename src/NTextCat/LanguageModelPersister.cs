@@ -69,19 +69,19 @@ namespace NTextCat
 
         public static NGram StringToNgram(string str)
         {
-            ulong ngram = str.Aggregate<char, NGram>(0, (ngr, c) => (ngr << 8) + CharToByte(c));
+            ulong ngram = ((IEnumerable<char>)(object)str).Aggregate<char, NGram>(0, (ngr, c) => (ngr << 8) + CharToByte(c));
             return ngram;
         }
 
         public static byte CharToByte(char c)
         {
-            byte[] bytes = Encoding.GetEncoding(1250).GetBytes(new[] { c });
+            byte[] bytes = Encoding.GetEncoding("windows-1250").GetBytes(new[] { c });
             return bytes.Single();
         }
 
         public static char ByteToChar(byte b)
         {
-            char[] chars = Encoding.GetEncoding(1250).GetChars(new[] { b });
+            char[] chars = Encoding.GetEncoding("windows-1250").GetChars(new[] { b });
             return chars.Single();
         }
     }
@@ -89,7 +89,7 @@ namespace NTextCat
     public class ByteLanguageModelPersister : LanguageModelPersister<UInt64>
     {
         public ByteLanguageModelPersister()
-            : base(NgramToString, StringToNgram, Encoding.GetEncoding(1250))
+            : base(NgramToString, StringToNgram, Encoding.GetEncoding("windows-1250"))
         {
         }
     }

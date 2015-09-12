@@ -1,0 +1,45 @@
+{
+	"compilationOptions": {
+		"define": [
+			"PORTABLE"
+		],
+		"keyFile": "../StrongNameKey.snk"
+	},
+	"version": "1.0.0-*",
+	"compile": [
+		"../Commons/**/*.cs",
+		"../NClassify/**/*.cs",
+		"../NTextCat/**/*.cs"
+	],
+	"exclude": [
+		"../Commons/EnumeratorDataReader.cs",
+		"../Commons/ExternalApplication.cs",
+		"../Commons/TupleSequenceDataReader.cs",
+		"../Commons/Properties/AssemblyInfo.cs",
+		"../NClassify/Properties/AssemblyInfo.cs",
+		"../NTextCat/Properties/AssemblyInfo.cs",
+		"../NClassify/PowerCollectionsBag.cs"
+	],
+  "frameworks": {
+    "net45+win+wpa81": {
+      "frameworkAssemblies": {
+        "System.Runtime": "4.0.0.0",
+        "System.Runtime.Extensions": "4.0.0.0",
+        "System.Collections": "4.0.0.0",
+        "System.IO": "4.0.0.0",
+        "System.Text.Encoding": "4.0.0.0",
+        "System.Linq": "4.0.0.0",
+        "System.Globalization": "4.0.0.0",
+        "System.Xml.XDocument": "4.0.0.0",
+        "System.Linq.Parallel": "4.0.0.0",
+        "System.Text.RegularExpressions": "4.0.0.0",
+        "System.Collections.Concurrent": "4.0.0.0",
+        "System.Xml.ReaderWriter": "4.0.0.0",
+        "System.Diagnostics.Debug": "4.0.0.0"
+      }
+    }
+  },
+  "dependencies": {
+    "Shaman.ValueString": "1.0.0-beta-4989"
+  }
+}
