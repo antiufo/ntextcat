@@ -131,8 +131,32 @@ namespace NTextCat
                     }
                 }
 
-                foreach (var ngram in UpdateAndProduceNgrams(charsToProcess, currentNgrams))
-                    yield return ngram;
+                while (charsToProcess.Count > 0)
+                {
+                    var processingByte = charsToProcess.Dequeue();
+                    for (int j = 0; j < currentNgrams.Length; j++)
+                    {
+                        var currentNgram = currentNgrams[j];
+                        // if ngram is complete (e.g. 3gram contains 3 characters)
+                        if (currentNgram.Count > j)
+                            currentNgram.Dequeue();
+                        if (currentNgram.Count == 0) currentNgram.Start = charsToProcess.Start - 1;
+                        currentNgram.Enqueue(processingByte);
+                        // if ngram is complete (e.g. 3gram contains 3 characters)
+                        if (j == 0) // if unigram
+                        {
+                            var ch = currentNgram.Peek();
+                            // prevent pure "_" as ngram otherwise it becomes the most frequent ngram
+                            if (ch != '_')
+                                yield return currentNgram.ToValueString().Substring(1);
+                        }
+                        else if (currentNgram.Count > j)
+                        {
+                            // todo: optimization to remove excessive array creation: Queue => _Array_ => String
+                            yield return currentNgram.ToValueString();
+                        }
+                    }
+                }
 
                 if (cleanNgrams)
                 {
@@ -144,12 +168,6 @@ namespace NTextCat
                 previousByte = currentByte;
             }
 
-            if (insideWord)
-            {
-                charsToProcess.Enqueue('_');
-                foreach (var ngram in UpdateAndProduceNgrams(charsToProcess, currentNgrams))
-                    yield return ngram;
-            }
         }
 
 
@@ -232,36 +250,7 @@ namespace NTextCat
         }
 
 
-        private IEnumerable<ValueString> UpdateAndProduceNgrams(CharQueue charsToProcess, CharQueue[] currentNgrams)
-        {
-            while (charsToProcess.Count > 0)
-            {
-                var processingByte = charsToProcess.Dequeue();
-                for (int j = 0; j < currentNgrams.Length; j++)
-                {
-                    var currentNgram = currentNgrams[j];
-                    // if ngram is complete (e.g. 3gram contains 3 characters)
-                    if (currentNgram.Count > j)
-                        currentNgram.Dequeue();
-                    if (currentNgram.Count == 0) currentNgram.Start = charsToProcess.Start - 1;
-                    currentNgram.Enqueue(processingByte);
-                    // if ngram is complete (e.g. 3gram contains 3 characters)
-                    if (j == 0) // if unigram
-                    {
-                        var ch = currentNgram.Peek();
-                        // prevent pure "_" as ngram otherwise it becomes the most frequent ngram
-                        if (ch != '_')
-                            yield return currentNgram.ToValueString().Substring(1);
-                    }
-                    else if (currentNgram.Count > j)
-                    {
-                        // todo: optimization to remove excessive array creation: Queue => _Array_ => String
-                        yield return currentNgram.ToValueString();
-                    }
-                }
-            }
-        }
-
+        
         private IEnumerable<string> UpdateAndProduceNgrams(Queue<char> charsToProcess, Queue<char>[] currentNgrams)
         {
             while (charsToProcess.Count > 0)
