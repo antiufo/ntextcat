@@ -15,12 +15,12 @@ namespace IvanAkcheurov.NClassify
     /// </remarks>
     public class Distribution<T> : IModifiableDistribution<T>
     {
-        private IBag<T> _store;
+        private Bag<T> _store;
         private bool _containsUnrepresentedNoiseEvents;
         private long _distinctEventsCountWithNoise;
         private long _totalEventCountWithNoise;
 
-        public Distribution(IBag<T> store)
+        public Distribution(Bag<T> store)
         {
             _store = store;
         }

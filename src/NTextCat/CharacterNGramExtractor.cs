@@ -11,7 +11,7 @@ namespace NTextCat
     /// <summary>
     /// Extracts char-ngrams out of TextReader, char[] or string.
     /// </summary>
-    public class CharacterNGramExtractor : IFeatureExtractor<TextReader, ValueString>, IFeatureExtractor<char[], ValueString>, IFeatureExtractor<ValueString, ValueString>
+    public class CharacterNGramExtractor : IFeatureExtractor<TextReader, ValueString>, IFeatureExtractor<char[], ValueString>, IFeatureExtractor<string, ValueString>
     {
         private readonly int _maxNGramLength = 5;
         private readonly long _maxLinesToRead;
@@ -30,7 +30,7 @@ namespace NTextCat
         /// </summary>
         /// <param name="text"></param>
         /// <returns>the sequence of ngrams extracted</returns>
-        public IEnumerable<ValueString> GetFeatures(ValueString text)
+        public IEnumerable<ValueString> GetFeatures(string text)
         {
             return GetFeatures(new StringReader(text));
         }

@@ -50,10 +50,35 @@ namespace NTextCat
             return likelyLanguages;
         }
 
+        public Tuple<LanguageInfo, double> ClassifyTakeFirst(IDistribution<T> guessedLanguageModel)
+        {
+            IDictionary<T, int> rankedGuessedLanguageModel = GetRankedLanguageModel(guessedLanguageModel);
+            var classifier =
+                new KnnMonoCategorizedClassifier<IDictionary<T, int>, LanguageInfo>(
+                    new RankingDistanceCalculator<T>(_defaultNgramRankOnAbsence),
+                    _etalonLanguageModel2languageName);
+            IEnumerable<Tuple<LanguageInfo, double>> likelyLanguages = classifier.Classify(rankedGuessedLanguageModel);
+            return likelyLanguages.FirstOrDefault();
+        }
+
+
         private static IDictionary<T, int> GetRankedLanguageModel(IDistribution<T> languageModel)
         {
-            Dictionary<T, int> rankedLanguageModel = languageModel.OrderByDescending<KeyValuePair<T, long>, long>(e => e.Value).Select((e, i) => new { event_ = e.Key, rank = i + 1 }).ToDictionary(p => p.event_, p => p.rank);
+            Dictionary<T, int> rankedLanguageModel = languageModel.OrderByDescending<KeyValuePair<T, long>, long>(e => e.Value).Select((e, i) => new Pair(e.Key, i+1)).ToDictionary(p => p.evt, p => p.rank);
             return rankedLanguageModel;
         }
+
+        internal struct Pair
+        {
+            public T evt;
+            public int rank;
+
+            public Pair(T evt, int rank)
+            {
+                this.evt = evt;
+                this.rank = rank;
+            }
+        }
+
     }
 }

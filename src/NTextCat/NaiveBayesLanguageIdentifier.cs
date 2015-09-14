@@ -21,7 +21,7 @@ namespace NTextCat
                 languageModels.ToDictionary(lm => lm.Language, lm => lm.Features), 1);
         }
 
-        public IEnumerable<Tuple<LanguageInfo, double>> Identify(ValueString text)
+        public IEnumerable<Tuple<LanguageInfo, double>> Identify(string text)
         {
             var extractor = new CharacterNGramExtractor(MaxNGramLength, OnlyReadFirstNLines);
             var tokens = extractor.GetFeatures(text);

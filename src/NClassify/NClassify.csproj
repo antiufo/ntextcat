@@ -44,6 +44,10 @@
     <AssemblyOriginatorKeyFile>..\StrongNameKey.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Shaman.ValueString, Version=1.0.0.0, Culture=neutral, PublicKeyToken=18bc04d2eb1e1518, processorArchitecture=MSIL">
+      <HintPath>..\..\..\Awdee\packages\Shaman.ValueString.1.0.2.4\lib\portable-net45+win+wpa81\Shaman.ValueString.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
@@ -76,6 +80,7 @@
     <None Include="..\StrongNameKey.snk">
       <Link>StrongNameKey.snk</Link>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

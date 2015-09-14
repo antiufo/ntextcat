@@ -50,7 +50,7 @@ namespace NTextCat
         }
 
 
-        public IEnumerable<Tuple<LanguageInfo, double>> Identify(ValueString text)
+        public IEnumerable<Tuple<LanguageInfo, double>> Identify(string text)
         {
             var extractor = new CharacterNGramExtractor(MaxNGramLength, OnlyReadFirstNLines);
             var tokens = extractor.GetFeatures(text);
