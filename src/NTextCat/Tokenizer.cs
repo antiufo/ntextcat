@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using IvanAkcheurov.NClassify;
+using Shaman.Runtime;
 
 namespace NTextCat
 {
@@ -67,7 +68,7 @@ namespace NTextCat
             var buffer = new char[4096];
             int charsRead;
             char previousByte = (char)0;
-            var sb = new StringBuilder();
+            var sb = ReseekableStringBuilder.AcquirePooledStringBuilder();
             while ((charsRead = text.Read(buffer, 0, buffer.Length)) > 0)
             {
                 for (int i = 0; i < charsRead; i++)
@@ -113,6 +114,7 @@ namespace NTextCat
             {
                 yield return sb.ToString();
             }
+            ReseekableStringBuilder.Release(sb);
         }
 
         private static bool IsSeparator(char b)

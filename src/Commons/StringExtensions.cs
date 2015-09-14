@@ -128,18 +128,7 @@ namespace IvanAkcheurov.Commons
             return sequence.Interleave(interleaver, false, false);
         }
 
-        /// <summary>
-        /// Glues all <paramref name="strings"/> in a single string. Puts <paramref name="separator"/> between any two adjacent strings.
-        /// </summary>
-        /// <param name="strings"></param>
-        /// <param name="separator">is put between strings</param>
-        /// <returns>String in format: {Item1}[{separator}{Item2}[{separator}{Item3}...]]</returns>
-        public static string Join(this IEnumerable<string> strings, string separator)
-        {
-            var sb = new StringBuilder();
-            strings.Interleave(separator).ForEach(s => sb.Append(s));
-            return sb.ToString();
-        }
+    
 
         /// <summary>
         /// Returns substrings which were delimited in <paramref name="sourceString"/> with separator specified.

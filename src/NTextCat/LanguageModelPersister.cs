@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using IvanAkcheurov.NClassify;
 using NGram = System.UInt64;
+using Shaman.Runtime;
 
 namespace NTextCat
 {
@@ -58,13 +59,15 @@ namespace NTextCat
         public static string NgramToString(ulong ngram)
         {
             ulong left = ngram;
-            var builder = new StringBuilder();
+            var builder = ReseekableStringBuilder.AcquirePooledStringBuilder();
             while (left > 0)
             {
                 builder.Insert(0, ByteToChar(((byte) (left & 0xFF))));
                 left >>= 8;
             }
-            return builder.ToString();
+            var s = builder.ToString();
+            ReseekableStringBuilder.Release(builder);
+            return s;
         }
 
         public static NGram StringToNgram(string str)

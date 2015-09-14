@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Shaman.Runtime;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -88,12 +89,14 @@ namespace IvanAkcheurov.Commons
         public override string ReadToEnd()
         {
             CheckDisposed();
-            var sb = new StringBuilder();
+            var sb = ReseekableStringBuilder.AcquirePooledStringBuilder();
             var buffer = new char[4*1024];
             int readChars;
             while ((readChars = Read(buffer, 0, buffer.Length)) > 0)
                 sb.Append(buffer, 0, readChars);
-            return sb.ToString();
+            var s = sb.ToString();
+            ReseekableStringBuilder.Release(sb);
+            return s;
         }
 
         public override string ReadLine()
