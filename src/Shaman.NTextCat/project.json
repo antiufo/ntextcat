@@ -1,27 +1,27 @@
 {
-	"compilationOptions": {
-		"define": [
-			"PORTABLE"
-		],
-		"keyFile": "../StrongNameKey.snk"
-	},
-	"version": "1.0.0-*",
-	"compile": [
-		"../Commons/**/*.cs",
-		"../NClassify/**/*.cs",
-		"../NTextCat/**/*.cs"
-	],
-	"exclude": [
-		"../Commons/EnumeratorDataReader.cs",
-		"../Commons/ExternalApplication.cs",
-		"../Commons/TupleSequenceDataReader.cs",
-		"../Commons/Properties/AssemblyInfo.cs",
-		"../NClassify/Properties/AssemblyInfo.cs",
-		"../NTextCat/Properties/AssemblyInfo.cs",
-		"../NClassify/PowerCollectionsBag.cs"
-	],
+  "compilationOptions": {
+    "define": [
+      "PORTABLE"
+    ],
+    "keyFile": "../StrongNameKey.snk"
+  },
+  "version": "1.0.0-beta-3094",
+  "compile": [
+    "../Commons/**/*.cs",
+    "../NClassify/**/*.cs",
+    "../NTextCat/**/*.cs"
+  ],
+  "exclude": [
+    "../Commons/EnumeratorDataReader.cs",
+    "../Commons/ExternalApplication.cs",
+    "../Commons/TupleSequenceDataReader.cs",
+    "../Commons/Properties/AssemblyInfo.cs",
+    "../NClassify/Properties/AssemblyInfo.cs",
+    "../NTextCat/Properties/AssemblyInfo.cs",
+    "../NClassify/PowerCollectionsBag.cs"
+  ],
   "frameworks": {
-    "net45+win+wpa81": {
+    "net45+dnxcore50+win+wpa81": {
       "frameworkAssemblies": {
         "System.Runtime": "4.0.0.0",
         "System.Runtime.Extensions": "4.0.0.0",
@@ -40,6 +40,6 @@
     }
   },
   "dependencies": {
-    "Shaman.ValueString": "1.0.0-beta-4989"
+    "Shaman.ValueString": "1.0.2.7"
   }
 }

@@ -44,7 +44,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Shaman.ValueString, Version=1.0.0.0, Culture=neutral, PublicKeyToken=18bc04d2eb1e1518, processorArchitecture=MSIL">
-      <HintPath>..\..\..\Awdee\packages\Shaman.ValueString.1.0.2.5\lib\portable-net45+win+wpa81\Shaman.ValueString.dll</HintPath>
+      <HintPath>..\..\..\Awdee\packages\Shaman.ValueString.1.0.2.6\lib\portable-net45+win+wpa81\Shaman.ValueString.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
