@@ -151,5 +151,59 @@ namespace NTextCat
 
             return Create(languageModelList, maxNGramLength, maximumSizeOfDistribution, OccuranceNumberThreshold, OnlyReadFirstNLines);
         }
+
+        public T LoadBinary(Stream inputStream, Func<LanguageModel<ValueString>, bool> filterPredicate = null)
+        {
+            filterPredicate = filterPredicate ?? (_ => true);
+          
+
+
+            using (var br = new BinaryReader(inputStream, Encoding.UTF8))
+            {
+                var l = new List<LanguageModel<ValueString>>();
+
+
+                if (br.ReadInt32() != 1) throw new InvalidDataException();
+                var maximumSizeOfDistribution = br.ReadInt32();
+                var maxNGramLength = br.ReadInt32();
+
+                while (true)
+                {
+                    if (br.ReadInt32() != 1) break;
+
+                    var name2 = br.ReadString();
+                    var name3 = br.ReadString();
+                    var totalNoiseCount = br.ReadInt32();
+                    var distinctNoiseCount = br.ReadInt32();
+                    var count = br.ReadInt32();
+
+                    var language = new LanguageInfo(name2, name3, null, null);
+
+                    var features = new Distribution<ValueString>(new Bag<ValueString>());
+                        
+                    
+                 
+                    for (int i = 0; i < count; i++)
+                    {
+                        var text = br.ReadString();
+                        var cnt = br.ReadInt32();
+                        features.AddEvent(text, cnt);
+
+                    }
+                    features.AddNoise(totalNoiseCount, distinctNoiseCount);
+                    var lm = new LanguageModel<ValueString>(features, language, new Dictionary<string, string>());
+
+
+                    if (filterPredicate(lm)) l.Add(lm);
+                }
+
+
+                return Create(l, maxNGramLength, maximumSizeOfDistribution, OccuranceNumberThreshold, OnlyReadFirstNLines);
+
+
+            }
+
+
+        }
     }
 }
